@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEE. R. Granites & Marbles – Coimbatore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal-deep: #0d4a52;
+    --teal-mid: #1a6b76;
+    --teal-bright: #2a8a96;
+    --teal-light: #4db3c0;
+    --teal-pale: #c8edf0;
+    --cream: #f5f0e8;
+    --stone: #e8e0d0;
+    --charcoal: #1a1a1a;
+    --warm-white: #faf8f4;
+    --gold: #b8975a;
+    --shadow: rgba(13,74,82,0.15);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--warm-white);
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE TEXTURE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.6;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(13,74,82,0.96);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    padding: 0 5%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+    transition: background 0.3s;
+  }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 40px; height: 40px;
+  }
+
+  .nav-logo-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #fff;
+    letter-spacing: 0.05em;
+    line-height: 1.1;
+  }
+
+  .nav-logo-text span {
+    display: block;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.55rem;
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-pale);
+    opacity: 0.8;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    position: relative;
+    padding-bottom: 4px;
+    transition: color 0.3s;
+  }
+
+  .nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 0; height: 1px;
+    background: var(--teal-light);
+    transition: width 0.3s;
+  }
+
+  .nav-links a:hover { color: #fff; }
+  .nav-links a:hover::after { width: 100%; }
+
+  .nav-cta {
+    background: var(--gold);
+    color: #fff !important;
+    padding: 8px 20px !important;
+    border-radius: 2px;
+    letter-spacing: 0.1em !important;
+    transition: background 0.3s !important;
+  }
+
+  .nav-cta:hover { background: #a0803a !important; }
+  .nav-cta::after { display: none !important; }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+  }
+
+  .hamburger span {
+    width: 24px; height: 2px;
+    background: #fff;
+    transition: all 0.3s;
+    display: block;
+  }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    background:
+      linear-gradient(160deg, rgba(13,74,82,0.92) 0%, rgba(10,45,50,0.85) 60%, rgba(0,0,0,0.7) 100%),
+      url('https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80') center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    padding: 120px 5% 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero::before {
+    content: '';
+    position: absolute;
+    top: -50%; right: -20%;
+    width: 700px; height: 700px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(77,179,192,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  /* Marble vein lines */
+  #hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      repeating-linear-gradient(
+        -35deg,
+        transparent,
+        transparent 180px,
+        rgba(255,255,255,0.015) 180px,
+        rgba(255,255,255,0.015) 181px
+      );
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 700px;
+    animation: fadeUp 1s ease both;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(77,179,192,0.15);
+    border: 1px solid rgba(77,179,192,0.35);
+    color: var(--teal-light);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 50px;
+    margin-bottom: 28px;
+  }
+
+  .hero-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--teal-light);
+    animation: pulse 2s infinite;
+  }
+
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.8rem, 6vw, 5.2rem);
+    font-weight: 600;
+    color: #fff;
+    line-height: 1.05;
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-title em {
+    font-style: italic;
+    color: var(--teal-light);
+  }
+
+  .hero-sub {
+    font-size: 1.05rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.72);
+    max-width: 500px;
+    line-height: 1.75;
+    margin-bottom: 44px;
+    letter-spacing: 0.02em;
+  }
+
+  .hero-btns {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .btn-primary {
+    background: var(--teal-bright);
+    color: #fff;
+    padding: 14px 34px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: background 0.3s, transform 0.2s;
+  }
+
+  .btn-primary:hover { background: var(--teal-mid); transform: translateY(-2px); }
+
+  .btn-outline {
+    background: transparent;
+    color: #fff;
+    padding: 14px 34px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(255,255,255,0.4);
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 2px;
+    transition: border-color 0.3s, background 0.3s, transform 0.2s;
+  }
+
+  .btn-outline:hover {
+    border-color: rgba(255,255,255,0.8);
+    background: rgba(255,255,255,0.06);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 48px;
+    margin-top: 64px;
+    padding-top: 40px;
+    border-top: 1px solid rgba(255,255,255,0.12);
+    flex-wrap: wrap;
+  }
+
+  .stat {
+    text-align: left;
+  }
+
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: var(--teal-light);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: rgba(255,255,255,0.55);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 6px;
+  }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 96px 5%; }
+
+  .section-tag {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-tag::before {
+    content: '';
+    width: 28px; height: 1px;
+    background: var(--teal-bright);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 600;
+    color: var(--teal-deep);
+    line-height: 1.15;
+    margin-bottom: 20px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    color: var(--teal-mid);
+  }
+
+  .section-desc {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #5a6065;
+    line-height: 1.8;
+    max-width: 560px;
+  }
+
+  /* ── ABOUT ── */
+  #about {
+    background: var(--warm-white);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+
+  .about-image-wrap {
+    position: relative;
+  }
+
+  .about-img-main {
+    width: 100%;
+    aspect-ratio: 4/5;
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+  }
+
+  .about-img-accent {
+    position: absolute;
+    bottom: -30px;
+    right: -30px;
+    width: 55%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 6px solid var(--warm-white);
+    box-shadow: 0 20px 60px var(--shadow);
+  }
+
+  .about-badge-float {
+    position: absolute;
+    top: 30px;
+    left: -24px;
+    background: var(--teal-deep);
+    color: #fff;
+    padding: 20px 24px;
+    border-radius: 4px;
+    text-align: center;
+    box-shadow: 0 16px 40px rgba(13,74,82,0.35);
+  }
+
+  .about-badge-float .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: var(--teal-light);
+    line-height: 1;
+  }
+
+  .about-badge-float .lbl {
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-top: 4px;
+  }
+
+  .about-content { padding-right: 20px; }
+
+  .about-body {
+    font-size: 1rem;
+    font-weight: 300;
+    color: #555;
+    line-height: 1.85;
+    margin: 24px 0 40px;
+  }
+
+  .about-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .pill {
+    background: var(--teal-pale);
+    color: var(--teal-deep);
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 8px 18px;
+    border-radius: 50px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── PRODUCTS ── */
+  #products {
+    background: var(--cream);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #products::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--teal-deep), var(--teal-bright), var(--teal-light));
+  }
+
+  .products-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 60px;
+    gap: 30px;
+    flex-wrap: wrap;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 28px;
+  }
+
+  .product-card {
+    background: #fff;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 16px 48px rgba(13,74,82,0.15);
+  }
+
+  .product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.5s;
+  }
+
+  .product-card:hover .product-img { transform: scale(1.04); }
+
+  .product-img-wrap { overflow: hidden; }
+
+  .product-body {
+    padding: 24px;
+  }
+
+  .product-icon {
+    width: 36px; height: 36px;
+    background: var(--teal-pale);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+
+  .product-icon svg { width: 20px; height: 20px; fill: var(--teal-deep); }
+
+  .product-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--teal-deep);
+    margin-bottom: 8px;
+  }
+
+  .product-desc {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: #777;
+    line-height: 1.7;
+  }
+
+  .product-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 16px;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    text-decoration: none;
+    transition: gap 0.2s;
+  }
+
+  .product-arrow:hover { gap: 10px; }
+
+  /* ── WHY US ── */
+  #why {
+    background: var(--teal-deep);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #why::before {
+    content: '';
+    position: absolute;
+    bottom: -100px; right: -100px;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.03);
+  }
+
+  #why::after {
+    content: '';
+    position: absolute;
+    top: -80px; left: 30%;
+    width: 350px; height: 350px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.02);
+  }
+
+  #why .section-tag { color: var(--teal-light); }
+  #why .section-tag::before { background: var(--teal-light); }
+  #why .section-title { color: #fff; }
+  #why .section-title em { color: var(--teal-light); }
+
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 32px;
+    margin-top: 60px;
+  }
+
+  .why-card {
+    padding: 36px 32px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 4px;
+    transition: background 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .why-card::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0;
+    width: 100%; height: 2px;
+    background: linear-gradient(90deg, var(--teal-light), transparent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.4s;
+  }
+
+  .why-card:hover { background: rgba(255,255,255,0.08); transform: translateY(-4px); }
+  .why-card:hover::before { transform: scaleX(1); }
+
+  .why-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 4rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.06);
+    line-height: 1;
+    margin-bottom: -16px;
+  }
+
+  .why-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+  }
+
+  .why-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .why-text {
+    font-size: 0.88rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.75;
+  }
+
+  /* ── GALLERY ── */
+  #gallery {
+    background: var(--warm-white);
+  }
+
+  .gallery-header {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+
+  .gallery-header .section-tag {
+    justify-content: center;
+  }
+
+  .gallery-header .section-tag::before { display: none; }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    grid-template-rows: 260px 260px;
+    gap: 16px;
+  }
+
+  .g-item { overflow: hidden; border-radius: 4px; }
+
+  .g-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+  }
+
+  .g-item:hover img { transform: scale(1.06); }
+
+  .g1 { grid-column: span 5; grid-row: span 2; }
+  .g2 { grid-column: span 4; }
+  .g3 { grid-column: span 3; }
+  .g4 { grid-column: span 3; }
+  .g5 { grid-column: span 4; }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: var(--cream);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-info .section-desc {
+    margin-bottom: 40px;
+  }
+
+  .contact-items {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+  }
+
+  .contact-item {
+    display: flex;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  .contact-icon-box {
+    width: 46px; height: 46px;
+    flex-shrink: 0;
+    background: var(--teal-deep);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--teal-light);
+    font-size: 1.1rem;
+  }
+
+  .contact-item-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--teal-bright);
+    margin-bottom: 5px;
+  }
+
+  .contact-item-val {
+    font-size: 0.95rem;
+    font-weight: 300;
+    color: var(--charcoal);
+    line-height: 1.65;
+  }
+
+  .hours-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 10px;
+    background: #e6f7f7;
+    color: var(--teal-deep);
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 50px;
+    border: 1px solid rgba(42,138,150,0.25);
+  }
+
+  .hours-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #22c55e;
+    animation: pulse 2s infinite;
+  }
+
+  .map-wrap {
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px var(--shadow);
+    height: 100%;
+    min-height: 420px;
+    background: var(--stone);
+    position: relative;
+  }
+
+  .map-wrap iframe {
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    border: none;
+    display: block;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #071e22;
+    padding: 64px 5% 32px;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 48px;
+    padding-bottom: 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+    margin-bottom: 32px;
+  }
+
+  .footer-brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: #fff;
+    margin: 14px 0 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .footer-tagline {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: rgba(255,255,255,0.45);
+    line-height: 1.7;
+  }
+
+  .footer-col-title {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--teal-light);
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .footer-links a {
+    color: rgba(255,255,255,0.5);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 300;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--teal-light); }
+
+  .footer-social {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .social-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.5);
+    font-size: 0.8rem;
+    text-decoration: none;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    cursor: pointer;
+  }
+
+  .social-btn:hover {
+    border-color: var(--teal-light);
+    color: var(--teal-light);
+    background: rgba(77,179,192,0.1);
+  }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .footer-copy {
+    font-size: 0.78rem;
+    color: rgba(255,255,255,0.3);
+    font-weight: 300;
+  }
+
+  .footer-gst {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.2);
+    font-weight: 300;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── LOGO SVG (inline recreation) ── */
+  .logo-svg-icon {
+    width: 40px; height: 40px;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* ── DIVIDER ── */
+  .stone-divider {
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(90deg,
+      var(--teal-deep) 0%,
+      var(--teal-bright) 35%,
+      var(--teal-light) 50%,
+      var(--teal-bright) 65%,
+      var(--teal-deep) 100%
+    );
+  }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+
+    .nav-links.open {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 70px; left: 0; right: 0;
+      background: rgba(13,74,82,0.98);
+      padding: 24px 5%;
+      gap: 20px;
+    }
+
+    #about { grid-template-columns: 1fr; gap: 60px; }
+    .about-img-accent { display: none; }
+    .about-badge-float { left: 0; }
+
+    .gallery-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+    }
+
+    .g1, .g2, .g3, .g4, .g5 {
+      grid-column: span 1;
+      grid-row: span 1;
+      height: 200px;
+    }
+
+    #contact { grid-template-columns: 1fr; gap: 48px; }
+
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+
+    .hero-stats { gap: 28px; }
+  }
+
+  @media (max-width: 480px) {
+    .footer-top { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; align-items: flex-start; }
+  }
+
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(255,255,255,0.4);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    animation: fadeUp 1.5s ease both;
+  }
+
+  .scroll-mouse {
+    width: 22px; height: 36px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    padding-top: 6px;
+  }
+
+  .scroll-mouse::after {
+    content: '';
+    width: 3px; height: 8px;
+    border-radius: 2px;
+    background: rgba(255,255,255,0.5);
+    animation: scrollDown 2s infinite;
+  }
+
+  @keyframes scrollDown {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(10px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo">
+    <svg class="logo-svg-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- G-clamp/granite cutter icon recreation in teal -->
+      <g fill="none" stroke="#4db3c0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+        <!-- Base plate -->
+        <rect x="12" y="72" width="72" height="10" rx="3" fill="rgba(77,179,192,0.15)" stroke="#4db3c0"/>
+        <!-- Upright arm -->
+        <path d="M20 72 L20 40 Q20 28 32 24 L65 16"/>
+        <!-- Top blade -->
+        <path d="M65 16 L80 30 L55 44 L20 40"/>
+        <path d="M65 16 L55 44"/>
+        <!-- Blade detail -->
+        <path d="M72 23 L62 38" stroke-width="2.5"/>
+        <ellipse cx="66" cy="17" rx="5" ry="4" transform="rotate(-30 66 17)" fill="rgba(77,179,192,0.2)"/>
+      </g>
+    </svg>
+    <div class="nav-logo-text">
+      GEE. R.
+      <span>Granites & Marbles</span>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#products">Products</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#gallery">Gallery</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-badge">Established 1998 · Coimbatore</div>
+    <h1 class="hero-title">
+      Premium <em>Granites</em><br>& Marbles for<br>Every Space
+    </h1>
+    <p class="hero-sub">
+      Crafting durable elegance across Coimbatore for over two decades. From kitchen countertops to grand flooring — we bring the finest stone to your doorstep.
+    </p>
+    <div class="hero-btns">
+      <a href="#products" class="btn-primary">View Products</a>
+      <a href="#contact" class="btn-outline">Contact Us</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">26+</div>
+        <div class="stat-label">Years Experience</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Projects Completed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Stone Varieties</div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"></div>
+    Scroll
+  </div>
+</section>
+
+<div class="stone-divider"></div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-image-wrap fade-in">
+    <img class="about-img-main"
+      src="https://images.unsplash.com/photo-1615971677499-5467cbab01b0?w=800&q=80"
+      alt="Granite slab workshop">
+    <img class="about-img-accent"
+      src="https://images.unsplash.com/photo-1556909144-4a0cf8f3f0ee?w=400&q=80"
+      alt="Marble texture close-up">
+    <div class="about-badge-float">
+      <div class="num">26</div>
+      <div class="lbl">Years of<br>Mastery</div>
+    </div>
+  </div>
+  <div class="about-content fade-in">
+    <div class="section-tag">Our Story</div>
+    <h2 class="section-title">A Legacy Built on <em>Stone & Trust</em></h2>
+    <p class="about-body">
+      Since 1998, GEE. R. Granites & Marbles has been Coimbatore's trusted partner for premium natural stone. Located in the heart of Ganapathy, near Prozone Mall, we have served hundreds of homeowners, architects, and builders with an unwavering commitment to quality and craftsmanship.
+      <br><br>
+      Every slab we supply is handpicked for its character, durability, and beauty — because we believe the stone you choose tells the story of your space. From kitchens to commercial flooring, we deliver excellence that lasts generations.
+    </p>
+    <div class="about-pills">
+      <span class="pill">🏆 Award-Winning Service</span>
+      <span class="pill">🪨 Premium Sourcing</span>
+      <span class="pill">🤝 Trusted by 500+ Clients</span>
+      <span class="pill">🏗️ Custom Cutting Available</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section id="products">
+  <div class="products-header fade-in">
+    <div>
+      <div class="section-tag">Our Range</div>
+      <h2 class="section-title">Explore Our <em>Collections</em></h2>
+    </div>
+    <p class="section-desc">From timeless white marble to bold black granite, discover stones that transform ordinary spaces into extraordinary ones.</p>
+  </div>
+  <div class="products-grid">
+    <div class="product-card fade-in">
+      <div class="product-img-wrap">
+        <img class="product-img" src="https://images.unsplash.com/photo-1604709177225-055f99402ea3?w=600&q=80" alt="Granite Slabs">
+      </div>
+      <div class="product-body">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 3h18v3H3zM3 8h18v3H3zM3 13h18v3H3zM3 18h18v3H3z"/></svg>
+        </div>
+        <div class="product-name">Granite Slabs</div>
+        <p class="product-desc">Robust and stunning, our granite slabs come in 30+ patterns — from classic Black Galaxy to earthy Tan Brown and vibrant Kashmir Gold.</p>
+        <a href="#contact" class="product-arrow">Enquire Now →</a>
+      </div>
+    </div>
+    <div class="product-card fade-in">
+      <div class="product-img-wrap">
+        <img class="product-img" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Marble Designs">
+      </div>
+      <div class="product-body">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
+        </div>
+        <div class="product-name">Marble Designs</div>
+        <p class="product-desc">Italian Carrara, Indian Makrana, and exotic Statuario — our marble collection brings timeless luxury and natural veining to every interior.</p>
+        <a href="#contact" class="product-arrow">Enquire Now →</a>
+      </div>
+    </div>
+    <div class="product-card fade-in">
+      <div class="product-img-wrap">
+        <img class="product-img" src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80" alt="Kitchen Countertops">
+      </div>
+      <div class="product-body">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24"><path d="M18 2H6C4.9 2 4 2.9 4 4v1h16V4c0-1.1-.9-2-2-2zm2 5H4v1c0 1.1.9 2 2 2v10h12V10c1.1 0 2-.9 2-2V7z"/></svg>
+        </div>
+        <div class="product-name">Kitchen Countertops</div>
+        <p class="product-desc">Custom-cut and precision-finished countertops built to withstand daily use while adding elegance to your kitchen. Edges, cutouts, and polish included.</p>
+        <a href="#contact" class="product-arrow">Enquire Now →</a>
+      </div>
+    </div>
+    <div class="product-card fade-in">
+      <div class="product-img-wrap">
+        <img class="product-img" src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Flooring Solutions">
+      </div>
+      <div class="product-body">
+        <div class="product-icon">
+          <svg viewBox="0 0 24 24"><path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8-2v8h8V3h-8zm6 6h-4V5h4v4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm8 6h8v-8h-8v8zm2-6h4v4h-4v-4z"/></svg>
+        </div>
+        <div class="product-name">Flooring Solutions</div>
+        <p class="product-desc">Large-format and classic-size tiles for residential and commercial floors. Anti-skid finishes, mirror polish, and natural finish available for all budgets.</p>
+        <a href="#contact" class="product-arrow">Enquire Now →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section id="why">
+  <div class="fade-in" style="text-align:center; max-width:580px; margin:0 auto 0;">
+    <div class="section-tag" style="justify-content:center;">
+      <span>Why Choose Us</span>
+    </div>
+    <h2 class="section-title">Reasons Customers <em>Trust Us</em></h2>
+  </div>
+  <div class="why-grid">
+    <div class="why-card fade-in">
+      <div class="why-num">01</div>
+      <span class="why-icon">🏛️</span>
+      <div class="why-title">26+ Years of Excellence</div>
+      <p class="why-text">Since 1998, we've been Coimbatore's go-to stone supplier. Decades of experience means we understand every project, budget, and taste.</p>
+    </div>
+    <div class="why-card fade-in">
+      <div class="why-num">02</div>
+      <span class="why-icon">🪨</span>
+      <div class="why-title">Premium Quality Stones</div>
+      <p class="why-text">We source directly from reputed quarries across India and beyond. Every slab is inspected for consistency, finish, and durability before it reaches you.</p>
+    </div>
+    <div class="why-card fade-in">
+      <div class="why-num">03</div>
+      <span class="why-icon">💰</span>
+      <div class="why-title">Competitive Pricing</div>
+      <p class="why-text">Premium shouldn't mean unaffordable. We offer fair, transparent pricing without compromising on quality — for homeowners and contractors alike.</p>
+    </div>
+    <div class="why-card fade-in">
+      <div class="why-num">04</div>
+      <span class="why-icon">🤝</span>
+      <div class="why-title">Trusted Local Name</div>
+      <p class="why-text">Built on word-of-mouth and repeat customers, GEE. R. is a name synonymous with reliability in Coimbatore's construction and interior community.</p>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery">
+  <div class="gallery-header fade-in">
+    <div class="section-tag">Our Work</div>
+    <h2 class="section-title">A Glimpse of <em>Our Collections</em></h2>
+    <p class="section-desc" style="margin:0 auto; text-align:center;">Natural beauty, preserved and polished — see how our stones transform spaces.</p>
+  </div>
+  <div class="gallery-grid fade-in">
+    <div class="g-item g1">
+      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800&q=80" alt="Marble flooring in luxury home">
+    </div>
+    <div class="g-item g2">
+      <img src="https://images.unsplash.com/photo-1556909172-54557c7e4fb7?w=600&q=80" alt="Granite kitchen countertop">
+    </div>
+    <div class="g-item g3">
+      <img src="https://images.unsplash.com/photo-1615971677499-5467cbab01b0?w=400&q=80" alt="Marble slab detail">
+    </div>
+    <div class="g-item g4">
+      <img src="https://images.unsplash.com/photo-1604709177225-055f99402ea3?w=400&q=80" alt="Black granite surface">
+    </div>
+    <div class="g-item g5">
+      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="White marble bathroom">
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-info fade-in">
+    <div class="section-tag">Get In Touch</div>
+    <h2 class="section-title">Visit Our <em>Showroom</em></h2>
+    <p class="section-desc">We'd love to help you find the perfect stone. Come visit our showroom or reach out — our team is ready to guide you.</p>
+    <div class="contact-items">
+      <div class="contact-item">
+        <div class="contact-icon-box">📍</div>
+        <div>
+          <div class="contact-item-label">Address</div>
+          <div class="contact-item-val">
+            No. 60/6A, Vilankurichi Road,<br>
+            Ramakrishnapuram, near Prozone Mall,<br>
+            Ganapathy, Coimbatore – 641006,<br>
+            Tamil Nadu, India
+          </div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon-box">📞</div>
+        <div>
+          <div class="contact-item-label">Phone</div>
+          <div class="contact-item-val">+91 XXXXX XXXXX</div>
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-icon-box">🕐</div>
+        <div>
+          <div class="contact-item-label">Business Hours</div>
+          <div class="contact-item-val">Monday – Saturday: 9:00 AM – 7:30 PM</div>
+          <div class="hours-badge">
+            <span class="hours-dot"></span>
+            Open Until 7:30 PM Today
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="map-wrap fade-in">
+    <iframe
+      src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3916.027!2d76.9997!3d11.0468!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTHCsDAyJzQ4LjUiTiA3NsKwNTknNTguOSJF!5e0!3m2!1sen!2sin!4v1234567890"
+      allowfullscreen=""
+      loading="lazy"
+      referrerpolicy="no-referrer-when-downgrade"
+      title="GEE. R. Granites & Marbles Location">
+    </iframe>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <svg width="38" height="38" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="#4db3c0" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="12" y="72" width="72" height="10" rx="3" fill="rgba(77,179,192,0.15)" stroke="#4db3c0"/>
+            <path d="M20 72 L20 40 Q20 28 32 24 L65 16"/>
+            <path d="M65 16 L80 30 L55 44 L20 40"/>
+            <path d="M65 16 L55 44"/>
+            <path d="M72 23 L62 38" stroke-width="2.5"/>
+            <ellipse cx="66" cy="17" rx="5" ry="4" transform="rotate(-30 66 17)" fill="rgba(77,179,192,0.2)"/>
+          </g>
+        </svg>
+      </div>
+      <div class="footer-brand-text">GEE. R. Granites & Marbles</div>
+      <p class="footer-tagline">Coimbatore's trusted name for premium natural stone since 1998. Quality you can feel underfoot.</p>
+      <div class="footer-social">
+        <a class="social-btn" aria-label="Facebook">f</a>
+        <a class="social-btn" aria-label="Instagram">in</a>
+        <a class="social-btn" aria-label="WhatsApp">w</a>
+        <a class="social-btn" aria-label="YouTube">▶</a>
+      </div>
+    </div>
+    <div>
+      <div class="footer-col-title">Quick Links</div>
+      <ul class="footer-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#products">Products</a></li>
+        <li><a href="#gallery">Gallery</a></li>
+        <li><a href="#why">Why Choose Us</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Products</div>
+      <ul class="footer-links">
+        <li><a href="#products">Granite Slabs</a></li>
+        <li><a href="#products">Marble Designs</a></li>
+        <li><a href="#products">Kitchen Countertops</a></li>
+        <li><a href="#products">Flooring Solutions</a></li>
+        <li><a href="#products">Custom Cutting</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="footer-col-title">Address</div>
+      <p style="font-size:0.85rem;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.8;">
+        No. 60/6A, Vilankurichi Road,<br>
+        Ramakrishnapuram,<br>
+        Near Prozone Mall, Ganapathy,<br>
+        Coimbatore – 641006<br>
+        Tamil Nadu, India
+      </p>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2024 GEE. R. Granites & Marbles. All rights reserved.</p>
+    <p class="footer-gst">Established 1998 · Coimbatore, Tamil Nadu</p>
+  </div>
+</footer>
+
+<script>
+  // Hamburger
+  const hamburger = document.getElementById('hamburger');
+  const navLinks = document.getElementById('navLinks');
+  hamburger.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+
+  // Close nav on link click (mobile)
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => navLinks.classList.remove('open'));
+  });
+
+  // Scroll-triggered fade-ins
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, entry.target.dataset.delay || 0);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach((el, i) => {
+    el.dataset.delay = (i % 4) * 100;
+    observer.observe(el);
+  });
+
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 60) {
+      nav.style.background = 'rgba(7,30,34,0.98)';
+    } else {
+      nav.style.background = 'rgba(13,74,82,0.96)';
+    }
+  });
+</script>
+</body>
+</html>
